@@ -1,23 +1,6 @@
 import {Module} from 'vuex'
 import {Theme} from '@/types/themes'
 
-const defaultWebreaderSettings = {
-  paged: {
-    scale: '',
-    pageLayout: '',
-  },
-  continuous: {
-    scale: '',
-    padding: '',
-    margin: '',
-  },
-  readingDirection: '',
-  swipe: false,
-  alwaysFullscreen: false,
-  animations: true,
-  background: '',
-}
-
 export const persistedModule: Module<any, any> = {
   state: {
     locale: '',
