@@ -1,6 +1,23 @@
 import {Module} from 'vuex'
 import {Theme} from '@/types/themes'
 
+const defaultWebreaderSettings = {
+  paged: {
+    scale: '',
+    pageLayout: '',
+  },
+  continuous: {
+    scale: '',
+    padding: '',
+    margin: '',
+  },
+  readingDirection: '',
+  swipe: false,
+  alwaysFullscreen: false,
+  animations: true,
+  background: '',
+}
+
 export const persistedModule: Module<any, any> = {
   state: {
     locale: '',
@@ -21,6 +38,7 @@ export const persistedModule: Module<any, any> = {
       animations: true,
       background: '',
     },
+    webreaderSettingsById: {},
     epubreader: {},
     browsingPageSize: undefined as unknown as number,
     thumbnailsPageSize: undefined as unknown as number,
@@ -92,6 +110,25 @@ export const persistedModule: Module<any, any> = {
     getLibraryRoute: (state) => (id: string) => {
       return state.library.route[id]
     },
+    getWebreaderSettings: (state) => (id: string) => {
+      // 1. Get the settings for the given ID, or an empty object if none exist
+      const customSettings = state.webreaderSettingsById[id] || {}
+
+      // 2. Deeply merge the defaults with the custom settings
+      // This provides the default values for any properties not overridden by customSettings.
+      return {
+        ...state.webreader,
+        ...customSettings,
+        paged: {
+          ...state.webreader.paged,
+          ...(customSettings.paged || {}),
+        },
+        continuous: {
+          ...state.webreader.continuous,
+          ...(customSettings.continuous || {}),
+        },
+      }
+    },
   },
   mutations: {
     setLocale(state, val) {
@@ -100,36 +137,113 @@ export const persistedModule: Module<any, any> = {
     setTheme(state, val) {
       state.theme = val
     },
-    setWebreaderPagedScale(state, val) {
-      state.webreader.paged.scale = val
+    setWebreaderPagedScale(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      if (!state.webreaderSettingsById[id].paged) {
+        state.webreaderSettingsById[id].paged = {}
+      }
+      state.webreaderSettingsById[id].paged.scale = val
     },
-    setWebreaderPagedPageLayout(state, val) {
-      state.webreader.paged.pageLayout = val
+    // Paged Settings
+    setWebreaderPagedPageLayout(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      if (!state.webreaderSettingsById[id].paged) {
+        state.webreaderSettingsById[id].paged = {}
+      }
+      state.webreaderSettingsById[id].paged.pageLayout = val
     },
-    setWebreaderContinuousScale(state, val) {
-      state.webreader.continuous.scale = val
+
+    // Continuous Settings
+    setWebreaderContinuousScale(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      if (!state.webreaderSettingsById[id].continuous) {
+        state.webreaderSettingsById[id].continuous = {}
+      }
+      state.webreaderSettingsById[id].continuous.scale = val
     },
-    setWebreaderContinuousPadding(state, val) {
-      state.webreader.continuous.padding = val
+    setWebreaderContinuousPadding(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      if (!state.webreaderSettingsById[id].continuous) {
+        state.webreaderSettingsById[id].continuous = {}
+      }
+      state.webreaderSettingsById[id].continuous.padding = val
     },
-    setWebreaderContinuousMargin(state, val) {
-      state.webreader.continuous.margin = val
+    setWebreaderContinuousMargin(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      if (!state.webreaderSettingsById[id].continuous) {
+        state.webreaderSettingsById[id].continuous = {}
+      }
+      state.webreaderSettingsById[id].continuous.margin = val
     },
-    setWebreaderReadingDirection(state, val) {
-      state.webreader.readingDirection = val
+
+    // Top-Level Webreader Settings
+    setWebreaderReadingDirection(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      state.webreaderSettingsById[id].readingDirection = val
     },
-    setWebreaderSwipe(state, val) {
-      state.webreader.swipe = val
+    setWebreaderSwipe(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      state.webreaderSettingsById[id].swipe = val
     },
-    setWebreaderAlwaysFullscreen(state, val) {
-      state.webreader.alwaysFullscreen = val
+    setWebreaderAlwaysFullscreen(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      state.webreaderSettingsById[id].alwaysFullscreen = val
     },
-    setWebreaderAnimations(state, val) {
-      state.webreader.animations = val
+    setWebreaderAnimations(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      state.webreaderSettingsById[id].animations = val
     },
-    setWebreaderBackground(state, val) {
-      state.webreader.background = val
+    setWebreaderBackground(state, { id, val }) {
+      if (!state.webreaderSettingsById[id]) {
+        state.webreaderSettingsById[id] = {}
+      }
+      state.webreaderSettingsById[id].background = val
     },
+    // setWebreaderPagedPageLayout(state, val) {
+    //   state.webreader.paged.pageLayout = val
+    // },
+    // setWebreaderContinuousScale(state, val) {
+    //   state.webreader.continuous.scale = val
+    // },
+    // setWebreaderContinuousPadding(state, val) {
+    //   state.webreader.continuous.padding = val
+    // },
+    // setWebreaderContinuousMargin(state, val) {
+    //   state.webreader.continuous.margin = val
+    // },
+    // setWebreaderReadingDirection(state, val) {
+    //   state.webreader.readingDirection = val
+    // },
+    // setWebreaderSwipe(state, val) {
+    //   state.webreader.swipe = val
+    // },
+    // setWebreaderAlwaysFullscreen(state, val) {
+    //   state.webreader.alwaysFullscreen = val
+    // },
+    // setWebreaderAnimations(state, val) {
+    //   state.webreader.animations = val
+    // },
+    // setWebreaderBackground(state, val) {
+    //   state.webreader.background = val
+    // },
     setEpubreaderSettings(state, val) {
       state.epubreader = val
     },

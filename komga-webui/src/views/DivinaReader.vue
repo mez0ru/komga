@@ -563,7 +563,7 @@ export default Vue.extend({
       },
       set: function (animations: boolean): void {
         this.settings.animations = animations
-        this.$store.commit('setWebreaderAnimations', animations)
+        this.$store.commit('setWebreaderAnimations', { val: animations, id: this.series.libraryId })
       },
     },
     scale: {
@@ -573,7 +573,7 @@ export default Vue.extend({
       set: function (scale: ScaleType): void {
         if (Object.values(ScaleType).includes(scale)) {
           this.settings.scale = scale
-          this.$store.commit('setWebreaderPagedScale', scale)
+          this.$store.commit('setWebreaderPagedScale', { val: scale, id: this.series.libraryId })
         }
       },
     },
@@ -584,7 +584,7 @@ export default Vue.extend({
       set: function (scale: ContinuousScaleType): void {
         if (Object.values(ContinuousScaleType).includes(scale)) {
           this.settings.continuousScale = scale
-          this.$store.commit('setWebreaderContinuousScale', scale)
+          this.$store.commit('setWebreaderContinuousScale', { val: scale, id: this.series.libraryId })
         }
       },
     },
@@ -595,7 +595,7 @@ export default Vue.extend({
       set: function (padding: number): void {
         if (PaddingPercentage.includes(padding)) {
           this.settings.sidePadding = padding
-          this.$store.commit('setWebreaderContinuousPadding', padding)
+          this.$store.commit('setWebreaderContinuousPadding', { val: padding, id: this.series.libraryId })
         }
       },
     },
@@ -606,7 +606,7 @@ export default Vue.extend({
       set: function (margin: number): void {
         if (MarginValues.includes(margin)) {
           this.settings.pageMargin = margin
-          this.$store.commit('setWebreaderContinuousMargin', margin)
+          this.$store.commit('setWebreaderContinuousMargin', { val: margin, id: this.series.libraryId })
         }
       },
     },
@@ -617,7 +617,7 @@ export default Vue.extend({
       set: function (color: string): void {
         if (this.backgroundColors.map(x => x.value).includes(color)) {
           this.settings.backgroundColor = color
-          this.$store.commit('setWebreaderBackground', color)
+          this.$store.commit('setWebreaderBackground', { val: color, id: this.series.libraryId })
         }
       },
     },
@@ -628,7 +628,7 @@ export default Vue.extend({
       set: function (readingDirection: ReadingDirection): void {
         if (Object.values(ReadingDirection).includes(readingDirection)) {
           this.settings.readingDirection = readingDirection
-          this.$store.commit('setWebreaderReadingDirection', readingDirection)
+          this.$store.commit('setWebreaderReadingDirection', { val: readingDirection, id: this.series.libraryId })
         }
       },
     },
@@ -639,7 +639,7 @@ export default Vue.extend({
       set: function (pageLayout: PagedReaderLayout): void {
         if (Object.values(PagedReaderLayout).includes(pageLayout)) {
           this.settings.pageLayout = pageLayout
-          this.$store.commit('setWebreaderPagedPageLayout', pageLayout)
+          this.$store.commit('setWebreaderPagedPageLayout', { val: pageLayout, id: this.series.libraryId })
         }
       },
     },
@@ -649,7 +649,7 @@ export default Vue.extend({
       },
       set: function (swipe: boolean): void {
         this.settings.swipe = swipe
-        this.$store.commit('setWebreaderSwipe', swipe)
+        this.$store.commit('setWebreaderSwipe', { val: swipe, id: this.series.libraryId })
       },
     },
     alwaysFullscreen: {
@@ -658,7 +658,7 @@ export default Vue.extend({
       },
       set: function (alwaysFullscreen: boolean): void {
         this.settings.alwaysFullscreen = alwaysFullscreen
-        this.$store.commit('setWebreaderAlwaysFullscreen', alwaysFullscreen)
+        this.$store.commit('setWebreaderAlwaysFullscreen', { val: alwaysFullscreen, id: this.series.libraryId })
         if (alwaysFullscreen) this.enterFullscreen()
         else screenfull.isEnabled && screenfull.exit()
       },
@@ -683,6 +683,21 @@ export default Vue.extend({
       this.$debug('[setup]', `bookId:${bookId}`, `page:${page}`)
       this.book = await this.$komgaBooks.getBook(bookId)
       this.series = await this.$komgaSeries.getOneSeries(this.book.seriesId)
+
+      // Set settings again to distinguish between libraries!
+      const settingsPerLibrary = this.$store.getters.getWebreaderSettings(this.series.libraryId)
+      this.$debug('[setup]', settingsPerLibrary)
+      this.$debug('[setup]', `libraryId:${this.series.libraryId}`)
+      this.readingDirection = settingsPerLibrary.readingDirection
+      this.animations = settingsPerLibrary.animations
+      this.pageLayout = settingsPerLibrary.paged.pageLayout
+      this.swipe = settingsPerLibrary.swipe
+      this.alwaysFullscreen = settingsPerLibrary.alwaysFullscreen
+      this.scale = settingsPerLibrary.paged.scale
+      this.continuousScale = settingsPerLibrary.continuous.scale
+      this.sidePadding = settingsPerLibrary.continuous.padding
+      this.pageMargin = settingsPerLibrary.continuous.margin
+      this.backgroundColor = settingsPerLibrary.background
 
       // parse query params to get context and contextId
       if (this.$route.query.contextId && this.$route.query.context
