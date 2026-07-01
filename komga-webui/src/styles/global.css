@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'Noto Sans JP';
+  /* Use the .woff2 file designed for variable axes */
+  src: url('~@/assets/fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype');
+
+  /* Define the supported range instead of a static number */
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 html {
     overflow-y: auto !important;
 }

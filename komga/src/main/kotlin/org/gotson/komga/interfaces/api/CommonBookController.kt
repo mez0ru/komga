@@ -286,7 +286,7 @@ class CommonBookController(
         .body(ByteArray(0))
     }
 
-    if (media.profile != MediaProfile.EPUB) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${media.mediaType}' not compatible with requested profile")
+    // if (media.profile != MediaProfile.EPUB) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${media.mediaType}' not compatible with requested profile")
     if (!isFont) contentRestrictionChecker.checkContentRestriction(principal!!.user, book)
 
     val res = media.files.firstOrNull { it.fileName == resourceName } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)

@@ -144,6 +144,7 @@
         :scale="scale"
         :animations="animations"
         :swipe="swipe"
+        :mokuro="mokuro"
         @menu="toggleToolbars()"
         @jump-previous="jumpToPrevious()"
         @jump-next="jumpToNext()"
@@ -332,6 +333,7 @@ import {Location} from 'vue-router'
 import PagedReader from '@/components/readers/PagedReader.vue'
 import ContinuousReader from '@/components/readers/ContinuousReader.vue'
 import {ContinuousScaleType, MarginValues, PaddingPercentage, PagedReaderLayout, ScaleType} from '@/types/enum-reader'
+import {MokuroObject, Mokuro} from '@/types/mokuro'
 import {
   shortcutsLTR,
   shortcutsRTL,
@@ -387,6 +389,7 @@ export default Vue.extend({
       showSettings: false,
       showHelp: false,
       goToPage: 1,
+      mokuro: null,
       settings: {
         pageLayout: PagedReaderLayout.SINGLE_PAGE,
         swipe: false,
@@ -684,6 +687,11 @@ export default Vue.extend({
       this.book = await this.$komgaBooks.getBook(bookId)
       this.series = await this.$komgaSeries.getOneSeries(this.book.seriesId)
 
+      // Load Mokuro IF language is japanese:
+      if (this.series.metadata.language === 'ja') {
+        this.mokuro = new Mokuro(await this.$komgaBooks.getResource(bookId, '.mokuro') as MokuroObject)
+      }
+
       // Set settings again to distinguish between libraries!
       const settingsPerLibrary = this.$store.getters.getWebreaderSettings(this.series.libraryId)
       this.$debug('[setup]', settingsPerLibrary)
@@ -950,7 +958,7 @@ export default Vue.extend({
 </script>
 <style scoped>
 .settings {
-  z-index: 2;
+  z-index: 3;
 }
 
 .full-height {
