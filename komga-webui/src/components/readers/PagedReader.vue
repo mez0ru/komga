@@ -170,9 +170,11 @@ export default Vue.extend({
       } else {
         this.$emit('update:page', 1)
       }
-      this.$nextTick(() => {
-        this.updateObservedElements()
-      })
+      if (this.mokuro) {
+        this.$nextTick(() => {
+          this.updateObservedElements()
+        })
+      }
     },
     page(val, old) {
       this.$debug('[watch:page]', `old:${old}`, `new:${val}`)

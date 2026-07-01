@@ -1,0 +1,10 @@
+# pnpm-workspace.yaml
+packages:
+  - 'packages/*'
+
+allowBuilds:
+  "@d-i-t-a/reader@https://codeload.github.com/gotson/R2D2BC/tar.gz/3ebc8cddc83f1249d12135717f87b0ab1e9a9888": true
+  '@parcel/watcher': true
+  core-js: true
+  r2-shared-js: true
+  yorkie: true
