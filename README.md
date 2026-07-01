@@ -7,9 +7,14 @@
 
 [![Translation status](https://hosted.weblate.org/widgets/komga/-/webui/svg-badge.svg)](https://hosted.weblate.org/engage/komga/)
 
-# ![app icon](./.github/readme-images/app-icon.png) Komga
+# ![app icon](./.github/readme-images/app-icon.png) Komga Fork
 
 Komga is a media server for your comics, mangas, BDs, magazines and eBooks.
+
+### Fork Changes ✨✨
+1. I add a mokuro support to the original komga, now you can enjoy your immersion with komga! 🍣🍜
+Make sure you add .mokuro file to the archived books for this to work (with the name ".mokuro" exactly), and set the series language to japanese. 
+2. Page styles are preserved on libraries, so you can enjoy your manhwa, manga, or whatever style and keep it to that library. 💯💯 
 
 #### Chat on [Discord](https://discord.gg/TdRpkDu)
 
